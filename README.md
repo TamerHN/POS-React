@@ -98,5 +98,7 @@ Submitting the form will add anew product to the table and cancelling the proces
 - Access to the project folder on the computer via Termaial or Git Bash
 - Excute `npm install` to download all necessary packages
 - Execute ` npx json-server --watch data/db.json --port 5000` to start the json server
+    - Username: `admin@pos.com`.
+    - Password: `123456` 
 - Excute `npm run dev` to start the project
 
