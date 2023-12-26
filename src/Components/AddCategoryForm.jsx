@@ -1,7 +1,6 @@
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import FormElementControl from "./FormElementControl.jsx";
-import useCUD from "../CustomHooks/useCUD.jsx";
 import FetchedDataContext from "../Contexts/FetchedDataContext.jsx";
 import { useContext } from "react";
 
@@ -34,11 +33,8 @@ const AddProductForm = ({ closeModal }) => {
       name: values.name,
       id: create_UUID(),
     };
-    const prom = useCUD("http://localhost:5000/categories", "POST", dataToSend);
-    prom.then(() => {
-      closeModal();
-      setCategContext([...categContext, dataToSend]);
-    });
+    closeModal();
+    setCategContext([...categContext, dataToSend]);
   };
 
   return (

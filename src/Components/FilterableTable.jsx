@@ -28,6 +28,7 @@ const FilterableTable = ({
     return !!pattern.test(str);
   }
 
+  console.log({ dataInTable });
   const filteredRows = dataInTable.filter((row) => {
     let res = false;
     let vals = Object.values(row);
@@ -67,11 +68,8 @@ const FilterableTable = ({
         <table>
           <thead>
             <tr>
-              {" "}
-              {headers.map((header,index) => {
-                return (
-                  <th key={index}>{capetalizeFirstLetter(header)}</th>
-                );
+              {headers.map((header, index) => {
+                return <th key={index}>{capetalizeFirstLetter(header)}</th>;
               })}
               <th key={Math.random()}>Actions</th>
             </tr>

@@ -1,12 +1,10 @@
+import { Form, Formik } from "formik";
 import { useState } from "react";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import FormElementControl from "./FormElementControl.jsx";
-import { auth } from "../firebase.js";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import TextError from "./TextError.jsx";
 import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
 import "./Components_Styles/loginForm.css";
+import FormElementControl from "./FormElementControl.jsx";
+import TextError from "./TextError.jsx";
 
 function LoginForm({ setUser }) {
   const [error, setError] = useState(false);
@@ -18,22 +16,17 @@ function LoginForm({ setUser }) {
   };
 
   const validationSchema = Yup.object({
-    email: Yup.string().email("Invalid email format").required("Required"),
+    email: Yup.string().required("Required"),
     password: Yup.string().required("Required"),
   });
 
   const onSubmit = (values) => {
-    signInWithEmailAndPassword(auth, values.email, values.password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        setUser(user);
-        navigateTo("/");
-      })
-      .catch((error) => {
-        const errorMessage = error.message;
-        console.log(errorMessage);
-        setError(errorMessage);
-      });
+    if (!!values.email && !!values.password) {
+      setUser({ ...values });
+      navigateTo("/");
+    } else {
+      setError("Wrong Email or Password");
+    }
   };
 
   return (
@@ -49,7 +42,7 @@ function LoginForm({ setUser }) {
               <div className="loginForm-inputs">
                 <FormElementControl
                   control="input"
-                  type="email"
+                  type="text"
                   label="Email"
                   name="email"
                 />

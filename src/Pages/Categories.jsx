@@ -1,5 +1,4 @@
 import { useState, useRef, useContext } from "react";
-import useCUD from "../CustomHooks/useCUD.jsx";
 import FilterableTable from "../Components/FilterableTable.jsx";
 import LoadingSpinner from "../Components/LoadingSpinner.jsx";
 import Modal from "../Components/Modal.jsx";
@@ -23,38 +22,26 @@ const Categories = () => {
   const idToUpdate = useRef(0);
 
   const handleDeleteCategory = (categoryId) => {
-    const prom = useCUD(
-      `http://localhost:5000/categories/`,
-      "DELETE",
-      "",
-      categoryId
-    );
-
-    prom.then(() => {
-      let categToDelete = "";
-      const filteredCategs = categContext.filter((categ) => {
-        if (categ.id === categoryId) {
-          categToDelete = categ.name;
-          return false;
-        }
-        return true;
-      });
-      setCategContext(filteredCategs);
-
-      const filteredProd = productsContext.filter((product) => {
-        if (product.category === categToDelete) {
-          const prom = useCUD(
-            `http://localhost:5000/products/`,
-            "DELETE",
-            "",
-            product.id
-          );
-          return false;
-        }
-        return true;
-      });
-      setProductsContext(filteredProd);
+    let categToDelete = "";
+    const filteredCategs = categContext.filter((categ) => {
+      if (categ.id === categoryId) {
+        categToDelete = categ.name;
+        return false;
+      }
+      return true;
     });
+    setCategContext(filteredCategs);
+
+    const filteredProd = productsContext.map((product) => {
+      if (product.category === categToDelete) {
+        return {
+          ...product,
+          category: "",
+        };
+      }
+      return product;
+    });
+    setProductsContext(filteredProd);
   };
 
   const toggleshowAddCategoryModal = () => {

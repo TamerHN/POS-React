@@ -1,19 +1,12 @@
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import FormElementControl from "./FormElementControl.jsx";
-import useCUD from "../CustomHooks/useCUD.jsx";
-import FetchedDataContext from "../Contexts/FetchedDataContext.jsx";
+import { Form, Formik } from "formik";
 import { useContext } from "react";
+import * as Yup from "yup";
+import FetchedDataContext from "../Contexts/FetchedDataContext.jsx";
+import FormElementControl from "./FormElementControl.jsx";
 
 const UpdateCategoryForm = ({ closeModal, id }) => {
-  const {
-    categContext,
-    needToRefreshCategData,
-    setNeedToRefreshCategData,
-    setNeedToRefreshProductsData,
-    needToRefreshProductsData,
-    productsContext,
-  } = useContext(FetchedDataContext);
+  const { categContext, setProductsContext, productsContext, setCategContext } =
+    useContext(FetchedDataContext);
   const selectedRow = categContext.filter((item) => item.id === id)[0];
   const initialValues = {
     name: selectedRow.name,
@@ -27,40 +20,27 @@ const UpdateCategoryForm = ({ closeModal, id }) => {
     const dataToSend = {
       name: values.name,
     };
-    const prom = useCUD(
-      `http://localhost:5000/categories/`,
-      "PUT",
-      dataToSend,
-      id
-    );
-    prom
-      .then((res) => res.json())
-      .then(() => {
-        closeModal();
-        setNeedToRefreshCategData(!needToRefreshCategData);
-      })
-      .then(() => {
-        productsContext.forEach((product) => {
-          if (product.category === selectedRow.name) {
-            const productToUpdateAfterCateg = {
-              code: product.code,
-              name: product.name,
-              category: values.name,
-              price: product.price,
-              image: product.image,
-            };
-            const prom = useCUD(
-              `http://localhost:5000/products/`,
-              "PUT",
-              productToUpdateAfterCateg,
-              product.id
-            );
-            prom.then(() => {
-              setNeedToRefreshProductsData(!needToRefreshProductsData);
-            });
-          }
-        });
-      });
+
+    closeModal();
+    const newCategories = categContext.map((category) => {
+      if (category.id === id) {
+        return dataToSend;
+      }
+      return category;
+    });
+
+    const newProducts = productsContext.map((product) => {
+      if (product.category === selectedRow.name) {
+        return {
+          ...product,
+          category: values.name,
+        };
+      }
+      return product;
+    });
+
+    setCategContext(newCategories);
+    setProductsContext(newProducts);
   };
 
   return (

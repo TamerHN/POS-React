@@ -15,7 +15,7 @@
   border: 1px solid #646cff;
   border-radius: 5px;
 }
-input[type="email"],
+input[type="text"],
 input[type="password"] {
   width: 70%;
 }

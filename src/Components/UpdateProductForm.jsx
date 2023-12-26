@@ -1,17 +1,12 @@
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import FormElementControl from "./FormElementControl.jsx";
-import useCUD from "../CustomHooks/useCUD.jsx";
-import FetchedDataContext from "../Contexts/FetchedDataContext.jsx";
+import { Form, Formik } from "formik";
 import { useContext } from "react";
+import * as Yup from "yup";
+import FetchedDataContext from "../Contexts/FetchedDataContext.jsx";
+import FormElementControl from "./FormElementControl.jsx";
 
 const UpdateProductForm = ({ closeModal, id }) => {
-  const {
-    productsContext,
-    needToRefreshProductsData,
-    setNeedToRefreshProductsData,
-    categContext,
-  } = useContext(FetchedDataContext);
+  const { productsContext, setProductsContext, categContext } =
+    useContext(FetchedDataContext);
   const selectedRow = productsContext.filter((item) => item.id === id)[0];
   const initialValues = {
     code: selectedRow.code,
@@ -44,18 +39,13 @@ const UpdateProductForm = ({ closeModal, id }) => {
       image: values.image,
     };
 
-    const prom = useCUD(
-      `http://localhost:5000/products/`,
-      "PUT",
-      dataToSend,
-      id
-    );
-    prom
-      .then((res) => res.json())
-      .then(() => {
-        closeModal();
-        setNeedToRefreshProductsData(!needToRefreshProductsData);
-      });
+    const newProducts = productsContext.map((product) => {
+      if (product.id === id) {
+        return dataToSend;
+      }
+      return product;
+    });
+    setProductsContext(newProducts);
   };
 
   return (

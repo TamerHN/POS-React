@@ -5,7 +5,6 @@ import Modal from "../Components/Modal.jsx";
 import AddProductForm from "../Components/AddProductForm.jsx";
 import UpdateProductForm from "../Components/UpdateProductForm.jsx";
 import FetchedDataContext from "../Contexts/FetchedDataContext.jsx";
-import useCUD from "../CustomHooks/useCUD.jsx";
 import Navbar from "../Components/Navbar.jsx";
 
 const Products = () => {
@@ -18,18 +17,9 @@ const Products = () => {
   const idToUpdate = useRef(0);
 
   const handleDeleteProduct = (productID) => {
-    const prom = useCUD(
-      `http://localhost:5000/products/`,
-      "DELETE",
-      "",
-      productID
+    setProductsContext(
+      productsContext.filter((product) => product.id !== productID)
     );
-
-    prom.then(() => {
-      setProductsContext(
-        productsContext.filter((product) => product.id !== productID)
-      );
-    });
   };
 
   const toggleShowAddProductModal = () => {
